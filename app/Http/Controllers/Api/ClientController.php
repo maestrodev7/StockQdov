@@ -8,6 +8,8 @@ use App\Traits\ApiResponse;
 use Illuminate\Database\QueryException;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
+use Illuminate\Http\Request;
+
 
 class ClientController extends Controller
 {
@@ -20,10 +22,11 @@ class ClientController extends Controller
         $this->clientService = $clientService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $clients = $this->clientService->getAllClients();
+            $filters = $request->all(); 
+            $clients = $this->clientService->getAllClients($filters);
             return $this->success($clients, 'Liste des clients récupérée avec succès.');
         } catch (QueryException $e) {
             return $this->error('Erreur de base de données : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);

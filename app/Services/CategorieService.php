@@ -21,4 +21,9 @@ class CategorieService
     {
         return $this->categorieRepository->createCategory($data);
     }
+    
+    public function deleteCategory($id)
+    {
+        return $this->categorieRepository->deleteCategory($id);
+    }
 }

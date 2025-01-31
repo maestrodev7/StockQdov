@@ -8,6 +8,7 @@ use App\Traits\ApiResponse;
 use Illuminate\Database\QueryException;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
+use Illuminate\Http\Request;
 
 class FournisseurController extends Controller
 {
@@ -20,10 +21,11 @@ class FournisseurController extends Controller
         $this->fournisseurService = $fournisseurService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $fournisseurs = $this->fournisseurService->getAllFournisseurs();
+            $filters = $request->all(); 
+            $fournisseurs = $this->fournisseurService->getAllFournisseurs( $filters);
             return $this->success($fournisseurs, 'Liste des fournisseurs récupérée avec succès.');
         } catch (QueryException $e) {
             return $this->error('Erreur de base de données : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);

@@ -6,9 +6,9 @@ use App\Interfaces\FournisseurRepositoryInterface;
 
 class FournisseurRepository implements FournisseurRepositoryInterface
 {
-    public function getAllFournisseurs()
+    public function getAllFournisseurs(array $filters = [])
     {
-        return Fournisseur::all();
+        return Fournisseur::filter($filters)->get();
     }
 
     public function createFournisseur(array $data)

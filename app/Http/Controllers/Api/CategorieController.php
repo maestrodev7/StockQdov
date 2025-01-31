@@ -43,4 +43,16 @@ class CategorieController extends Controller
             return $this->error('Une erreur inattendue est survenue : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+    
+    public function destroy($id)
+    {
+        try {
+            $this->categorieService->deleteCategory($id);
+            return $this->success(null, 'categorie supprimée avec succès.');
+        } catch (QueryException $e) {
+            return $this->error('Erreur de base de données : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (Exception $e) {
+            return $this->error('Une erreur inattendue est survenue : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

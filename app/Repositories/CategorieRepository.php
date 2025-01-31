@@ -15,4 +15,11 @@ class CategorieRepository implements CategorieRepositoryInterface
     {
         return Categorie::create($data);
     }
+
+    public function deleteCategory($id)
+    {
+        $category = Categorie::findOrFail($id);
+        $category->delete();
+        return true;
+    }
 }

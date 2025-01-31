@@ -12,9 +12,9 @@ class ClientService
         $this->clientRepository = $clientRepository;
     }
 
-    public function getAllClients()
+    public function getAllClients($filters = [])
     {
-        return $this->clientRepository->getAllClients();
+        return $this->clientRepository->getAllClients($filters);
     }
 
     public function createClient(array $data)

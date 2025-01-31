@@ -6,9 +6,9 @@ use App\Interfaces\ClientRepositoryInterface;
 
 class ClientRepository implements ClientRepositoryInterface
 {
-    public function getAllClients()
+    public function getAllClients(array $filters = [])
     {
-        return Client::all();
+        return Client::filter($filters)->get();
     }
 
     public function createClient(array $data)

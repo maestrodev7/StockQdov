@@ -12,9 +12,9 @@ class FournisseurService
         $this->fournisseurRepository = $fournisseurRepository;
     }
 
-    public function getAllFournisseurs()
+    public function getAllFournisseurs($filters = [])
     {
-        return $this->fournisseurRepository->getAllFournisseurs();
+        return $this->fournisseurRepository->getAllFournisseurs($filters);
     }
 
     public function createFournisseur(array $data)
