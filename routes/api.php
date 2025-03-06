@@ -20,7 +20,7 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('clients', ClientController::class);
 Route::apiResource('fournisseurs', FournisseurController::class);
 
-Route::post('/purchases', [PurchaseController::class, 'store']);
+Route::apiResource('/purchases', PurchaseController::class);
 Route::post('/sales', [SaleController::class, 'store']);
 
 
@@ -29,8 +29,7 @@ Route::post('produits/magasin', [ProduitController::class, 'ajouterAuMagasin']);
 Route::post('produits/boutique', [ProduitController::class, 'ajouterALaBoutique']);
 Route::get('produits/boutique/{boutiqueId}', [ProduitController::class, 'getByBoutique']);
 Route::get('produits/magasin/{magasinId}', [ProduitController::class, 'getByMagasin']);
-Route::get('produits/boutique/{boutiqueId}/{id}', [ProduitController::class, 'getBoutiqueProduitById']);
-Route::get('produits/magasin/{magasinId}/{id}', [ProduitController::class, 'getMagasinProduitById']);
+Route::get('produits/{id}', [ProduitController::class, 'getProduitById']);
 Route::put('produits/{id}', [ProduitController::class, 'update']);
 Route::delete('produits/{id}', [ProduitController::class, 'destroy']);
 

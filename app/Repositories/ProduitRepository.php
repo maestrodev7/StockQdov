@@ -36,14 +36,9 @@ class ProduitRepository implements ProduitRepositoryInterface
         return Produit::filter($filters)->where('magasin_id', $magasinId)->get();
     }
 
-    public function getProduitByBoutique($boutiqueId, $id)
+    public function getProduitById($id)
     {
-        return Produit::where('boutique_id', $boutiqueId)->findOrFail($id);
-    }
-
-    public function getProduitByMagasin($magasinId, $id)
-    {
-        return Produit::where('magasin_id', $magasinId)->findOrFail($id);
+        return Produit::findOrFail($id);
     }
 
     public function update($id, array $data)

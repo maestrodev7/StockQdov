@@ -16,4 +16,9 @@ class PurchaseService
     {
         return $this->purchaseRepository->createPurchase($data);
     }
+
+    public function getAllPurchase()
+    {
+        return $this->purchaseRepository->getAllPurchase();
+    }
 }

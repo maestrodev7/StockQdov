@@ -42,4 +42,9 @@ class PurchaseRepository implements PurchaseRepositoryInterface
             throw $e; 
         }
     }
+
+    public function getAllPurchase()
+    {
+        return Purchase::all();
+    }
 }

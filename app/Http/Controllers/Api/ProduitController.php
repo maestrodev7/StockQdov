@@ -95,23 +95,12 @@ class ProduitController extends Controller
         }
     }
 
-    public function getProduitByBoutique($boutiqueId, $id)
-    {
-        try {
-            $produit = $this->produitService->getProduitByBoutique($boutiqueId, $id);
-            return $this->success($produit, 'Produit de la boutique récupéré avec succès.');
-        } catch (QueryException $e) {
-            return $this->error('Erreur de base de données : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
-        } catch (Exception $e) {
-            return $this->error('Une erreur inattendue est survenue : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
 
-    public function getProduitByMagasin($magasinId, $id)
+    public function getProduitById($id)
     {
         try {
-            $produit = $this->produitService->getProduitByMagasin($magasinId, $id);
-            return $this->success($produit, 'Produit du magasin récupéré avec succès.');
+            $produit = $this->produitService->getProduitById($id);
+            return $this->success($produit, 'Produit récupéré avec succès.');
         } catch (QueryException $e) {
             return $this->error('Erreur de base de données : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         } catch (Exception $e) {

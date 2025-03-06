@@ -45,4 +45,17 @@ class PurchaseController extends Controller
             );
         }
     }
+
+    public function index()
+    {
+        try {
+            $purchase = $this->purchaseService->getAllPurchase();
+
+            return $this->success($purchase, 'Liste des achats récupérée avec succès.');
+        } catch (QueryException $e) {
+            return $this->error('Erreur de base de données : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (Exception $e) {
+            return $this->error('Une erreur inattendue est survenue : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

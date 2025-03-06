@@ -36,14 +36,9 @@ class ProduitService
         return $this->produitRepository->getByMagasin($magasinId, $filters);
     }
 
-    public function getProduitByBoutique($boutiqueId, $id)
+    public function getProduitById($id)
     {
-        return $this->produitRepository->getProduitByBoutique($boutiqueId, $id);
-    }
-
-    public function getProduitByMagasin($magasinId, $id)
-    {
-        return $this->produitRepository->getProduitByMagasin($magasinId, $id);
+        return $this->produitRepository->getProduitById($id);
     }
 
     public function update($id, array $data)

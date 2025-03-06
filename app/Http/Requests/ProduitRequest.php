@@ -24,7 +24,8 @@ class ProduitRequest extends FormRequest
         return [
             'nom' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'prix' => 'required|numeric',
+            'prix_achat' => 'required|numeric',
+            'prix_vente' => 'required|numeric',
             'categorie_id' => 'required|exists:categories,id',
             'date_peremption' => 'nullable|date',
             'type' => 'nullable|string|max:50',

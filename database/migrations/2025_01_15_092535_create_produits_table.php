@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('prix_vente', 10, 2);
             $table->unsignedBigInteger('categorie_id');
             $table->date('date_peremption')->nullable();
-            $table->string('type');
+            $table->string('type')->nullable();
             $table->integer('quantite');
             $table->unsignedBigInteger('magasin_id')->nullable();
             $table->unsignedBigInteger('boutique_id')->nullable();
