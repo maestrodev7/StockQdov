@@ -41,6 +41,11 @@ class ProduitService
         return $this->produitRepository->getProduitById($id);
     }
 
+    public function scopeFilter(array $filters = [])
+    {
+        return $this->produitRepository->scopeFilter($filters);
+    }
+
     public function update($id, array $data)
     {
         return $this->produitRepository->update($id, $data);

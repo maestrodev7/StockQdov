@@ -10,4 +10,5 @@ interface ProduitRepositoryInterface
     public function getProduitById($id);
     public function update($id, array $data);
     public function delete($id);
+    public function scopeFilter( $filters);
 }

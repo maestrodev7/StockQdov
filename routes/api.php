@@ -25,6 +25,7 @@ Route::post('/sales', [SaleController::class, 'store']);
 
 
 Route::apiResource('categories', CategorieController::class);
+Route::get('produits', [ProduitController::class, 'getProduitsByFilter']);
 Route::post('produits/magasin', [ProduitController::class, 'ajouterAuMagasin']);
 Route::post('produits/boutique', [ProduitController::class, 'ajouterALaBoutique']);
 Route::get('produits/boutique/{boutiqueId}', [ProduitController::class, 'getByBoutique']);

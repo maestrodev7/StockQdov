@@ -32,17 +32,17 @@ class ProduitController extends Controller
         } catch (ValidationException $e) {
             return $this->error(
                 'Erreur de validation : ' . implode(', ', $e->errors()),
-                Response::HTTP_UNPROCESSABLE_ENTITY 
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (QueryException $e) {
             return $this->error(
                 'Erreur de base de données : ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR 
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         } catch (Exception $e) {
             return $this->error(
                 'Une erreur inattendue est survenue : ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR 
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -56,18 +56,31 @@ class ProduitController extends Controller
         } catch (ValidationException $e) {
             return $this->error(
                 'Erreur de validation : ' . implode(', ', $e->errors()),
-                Response::HTTP_UNPROCESSABLE_ENTITY 
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (QueryException $e) {
             return $this->error(
                 'Erreur de base de données : ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR 
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         } catch (Exception $e) {
             return $this->error(
                 'Une erreur inattendue est survenue : ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR 
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
+        }
+    }
+
+    public function getProduitsByFilter(Request $request)
+    {
+        try {
+            $filters = $request->all();
+            $produits = $this->produitService->scopeFilter($filters)->get();
+            return $this->success($produits, 'Produits récupérés avec succès.');
+        } catch (QueryException $e) {
+            return $this->error('Erreur de base de données : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (Exception $e) {
+            return $this->error('Une erreur inattendue est survenue : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

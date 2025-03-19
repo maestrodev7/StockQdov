@@ -29,7 +29,7 @@ class ProduitRequest extends FormRequest
             'categorie_id' => 'required|exists:categories,id',
             'date_peremption' => 'nullable|date',
             'type' => 'nullable|string|max:50',
-            'quantite' => 'required|integer|min:1',
+            'quantite' => 'required|integer|min:0',
             'magasin_id' => 'nullable|exists:magasins,id',
             'boutique_id' => 'nullable|exists:boutiques,id',
             'from_magazin' => 'nullable|boolean',
