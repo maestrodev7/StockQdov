@@ -16,4 +16,24 @@ class SaleService
     {
         return $this->saleRepository->createSale($data);
     }
+
+    public function getSaleById(int $saleId)
+    {
+        return $this->saleRepository->getSaleById($saleId);
+    }
+
+    public function filterSales(array $filters)
+    {
+        return $this->saleRepository->filterSales($filters);
+    }
+
+    public function updateSale(int $saleId, array $data)
+    {
+        return $this->saleRepository->updateSale($saleId, $data);
+    }
+
+    public function deleteSale(int $saleId)
+    {
+        return $this->saleRepository->deleteSale($saleId);
+    }
 }

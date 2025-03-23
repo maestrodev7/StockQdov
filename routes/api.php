@@ -22,7 +22,10 @@ Route::apiResource('fournisseurs', FournisseurController::class);
 
 Route::apiResource('/purchases', PurchaseController::class);
 Route::post('/sales', [SaleController::class, 'store']);
-
+Route::get('/sales', [SaleController::class, 'index']);
+Route::get('/sales/{id}', [SaleController::class, 'show']);
+Route::put('/sales/{id}', [SaleController::class, 'update']);
+Route::delete('/sales/{id}', [SaleController::class, 'destroy']);
 
 Route::apiResource('categories', CategorieController::class);
 Route::get('produits', [ProduitController::class, 'getProduitsByFilter']);
