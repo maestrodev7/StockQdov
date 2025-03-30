@@ -3,48 +3,58 @@
 namespace App\Repositories;
 
 use App\Models\Purchase;
-use App\Models\Produit;
 use App\Interfaces\PurchaseRepositoryInterface;
-use Illuminate\Support\Facades\DB;
 
 class PurchaseRepository implements PurchaseRepositoryInterface
 {
     public function createPurchase(array $data)
     {
-        DB::beginTransaction();
-
-        try {
-            $purchases = []; 
-
-            foreach ($data['items'] as $item) {
-                $product = Produit::findOrFail($item['product_id']); 
-
-                $totalPrice = $item['prix_achat'] * $item['quantite'];
-
-                $purchase = Purchase::create([
-                    'supplier_id' => $data['supplier_id'], 
-                    'product_id' => $item['product_id'],
-                    'quantity' => $item['quantite'],
-                    'price' => $item['prix_achat'],
-                    'total_price' => $totalPrice,
-                ]);
-
-                $product->increment('quantite', $item['quantite']); 
-
-                $purchases[] = $purchase;
-            }
-
-            DB::commit();
-
-            return $purchases; 
-        } catch (\Exception $e) {
-            DB::rollBack(); 
-            throw $e; 
-        }
+        return Purchase::create($data);
     }
 
-    public function getAllPurchase()
+
+    public function getPurchaseById(int $purchaseId)
     {
-        return Purchase::all();
+        return Purchase::findOrFail($purchaseId);
+    }
+
+    public function updatePurchase(int $purchaseId, array $data)
+    {
+        $purchase = $this->getPurchaseById($purchaseId);
+        $purchase->update($data);
+        return $purchase;
+    }
+
+    public function deletePurchase(int $purchaseId)
+    {
+        $purchase = $this->getPurchaseById($purchaseId);
+        return $purchase->delete();
+    }
+
+    public function filterPurchases(array $filters)
+    {
+        $query = Purchase::query();
+
+        if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
+            $query->whereBetween('created_at', [$filters['start_date'], $filters['end_date']]);
+        }
+
+        if (!empty($filters['supplier_id'])) {
+            $query->where('supplier_id', $filters['supplier_id']);
+        }
+
+        if (!empty($filters['product_id'])) {
+            $query->where('product_id', $filters['product_id']);
+        }
+
+        if (!empty($filters['min_total_price'])) {
+            $query->where('total_price', '>=', $filters['min_total_price']);
+        }
+
+        if (!empty($filters['max_total_price'])) {
+            $query->where('total_price', '<=', $filters['max_total_price']);
+        }
+
+        return $query->get();
     }
 }

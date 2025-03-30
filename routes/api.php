@@ -20,7 +20,13 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('clients', ClientController::class);
 Route::apiResource('fournisseurs', FournisseurController::class);
 
-Route::apiResource('/purchases', PurchaseController::class);
+Route::get('/purchases', [PurchaseController::class, 'filter']);
+Route::post('/purchases', [PurchaseController::class, 'store']);
+Route::get('/purchases/{id}', [PurchaseController::class, 'show']);
+Route::put('/purchases/{id}', [PurchaseController::class, 'update']);
+Route::delete('/purchases/{id}', [PurchaseController::class, 'destroy']);
+
+
 Route::post('/sales', [SaleController::class, 'store']);
 Route::get('/sales', [SaleController::class, 'index']);
 Route::get('/sales/{id}', [SaleController::class, 'show']);

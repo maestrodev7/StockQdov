@@ -10,7 +10,7 @@ class ProduitRepository implements ProduitRepositoryInterface
 
     public function scopeFilter( $filters)
     {
-        $query = \App\Models\Produit::query();
+        $query = Produit::query();
         if (isset($filters['nom']) && !empty($filters['nom'])) {
             $query->where('nom', 'LIKE', '%' . $filters['nom'] . '%');
         }
@@ -31,19 +31,6 @@ class ProduitRepository implements ProduitRepositoryInterface
         return Produit::create($data);
     }
 
-    public function decrementStock($magasinId, $quantite)
-    {
-        $produit = Produit::where('magasin_id', $magasinId)->firstOrFail();
-
-        if ($produit->quantite < $quantite) {
-            throw new \Exception('Quantité insuffisante dans le magasin.');
-        }
-
-        $produit->quantite -= $quantite;
-        $produit->save();
-
-        return $produit;
-    }
 
     public function getByBoutique($boutiqueId, array $filters = [])
     {
@@ -72,5 +59,16 @@ class ProduitRepository implements ProduitRepositoryInterface
         $produit = Produit::findOrFail($id);
         $produit->delete();
         return true;
+    }
+
+    public function incrementStock($produitId, $quantite)
+    {
+        return Produit::findOrFail($produitId)->increment('quantite', $quantite);
+    }
+
+
+    public function decrementStock($produitId, $quantite)
+    {
+        return Produit::findOrFail($produitId)->decrement('quantite', $quantite);
     }
 }

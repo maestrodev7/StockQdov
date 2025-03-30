@@ -55,4 +55,15 @@ class ProduitService
     {
         return $this->produitRepository->delete($id);
     }
+
+    public function incrementStock($produitId, $quantite)
+    {
+        return $this->produitRepository->incrementStock($produitId, $quantite);
+    }
+
+    // 🔴 Décrémentation du stock
+    public function decrementStock($produitId, $quantite)
+    {
+        return $this->produitRepository->decrementStock($produitId, $quantite);
+    }
 }

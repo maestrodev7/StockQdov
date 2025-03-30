@@ -90,7 +90,24 @@ class SaleRepository implements SaleRepositoryInterface
 
         try {
             $sale = $this->getSaleById($saleId);
+            $product = Produit::findOrFail($sale->product_id);
+            $oldQuantity = $sale->quantity;
 
+            // Vérifier si la quantité change
+            if (isset($data['quantity'])) {
+                $newQuantity = $data['quantity'];
+                $difference = $newQuantity - $oldQuantity;
+
+                // Si on augmente la quantité vendue, on vérifie le stock dispo
+                if ($difference > 0 && $product->quantite < $difference) {
+                    throw new Exception("Not enough stock available to increase quantity.");
+                }
+
+                // Mise à jour du stock (récupération ou décrémentation)
+                $product->decrement('quantite', $difference * -1); // fonctionne pour +X ou -X
+            }
+
+            // Mise à jour du reste des données
             $sale->update($data);
             DB::commit();
             return $sale;
@@ -106,7 +123,13 @@ class SaleRepository implements SaleRepositoryInterface
 
         try {
             $sale = $this->getSaleById($saleId);
+
+            // On remet la quantité dans le stock puisque la vente est annulée
+            $product = Produit::findOrFail($sale->product_id);
+            $product->increment('quantite', $sale->quantity);
+
             $result = $sale->delete();
+
             DB::commit();
             return $result;
         } catch (Exception $e) {
@@ -114,4 +137,5 @@ class SaleRepository implements SaleRepositoryInterface
             throw $e;
         }
     }
+
 }
