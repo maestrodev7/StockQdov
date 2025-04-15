@@ -38,6 +38,11 @@ class SaleController extends Controller
                 'Database error: ' . $e->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            return $this->error(
+                $e->getMessage(),
+                $e->getStatusCode()
+            );
         } catch (Exception $e) {
             return $this->error(
                 'An unexpected error occurred: ' . $e->getMessage(),
@@ -94,6 +99,11 @@ class SaleController extends Controller
             return $this->error(
                 'Database error: ' . $e->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            return $this->error(
+                $e->getMessage(),
+                $e->getStatusCode()
             );
         } catch (Exception $e) {
             return $this->error(

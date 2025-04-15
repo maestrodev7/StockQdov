@@ -37,6 +37,10 @@ class PurchaseRepository implements PurchaseRepositoryInterface
 
         if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
             $query->whereBetween('created_at', [$filters['start_date'], $filters['end_date']]);
+        } elseif (!empty($filters['start_date'])) {
+            $query->where('created_at', '>=', $filters['start_date']);
+        } elseif (!empty($filters['end_date'])) {
+            $query->where('created_at', '<=', $filters['end_date']);
         }
 
         if (!empty($filters['supplier_id'])) {

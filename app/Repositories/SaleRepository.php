@@ -7,7 +7,7 @@ use App\Interfaces\SaleRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
-
+use Symfony\Component\HttpKernel\Exception\HttpException;
 class SaleRepository implements SaleRepositoryInterface
 {
     public function createSale(array $data)
@@ -21,7 +21,7 @@ class SaleRepository implements SaleRepositoryInterface
                 $product = Produit::findOrFail($item['product_id']);
 
                 if ($product->quantite < $item['quantite']) {
-                    throw new Exception("Not enough stock available for product ID {$item['product_id']}.");
+                    throw new HttpException(422, "Not enough stock available to increase quantity.");
                 }
 
                 $totalPrice = $item['prix_vente'] * $item['quantite'];
@@ -100,7 +100,7 @@ class SaleRepository implements SaleRepositoryInterface
 
                 // Si on augmente la quantité vendue, on vérifie le stock dispo
                 if ($difference > 0 && $product->quantite < $difference) {
-                    throw new Exception("Not enough stock available to increase quantity.");
+                    throw new HttpException(422, "Not enough stock available to increase quantity.");
                 }
 
                 // Mise à jour du stock (récupération ou décrémentation)
