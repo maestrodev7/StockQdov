@@ -21,6 +21,8 @@ use App\Interfaces\PurchaseRepositoryInterface;
 use App\Repositories\PurchaseRepository;
 use App\Interfaces\SaleRepositoryInterface;
 use App\Repositories\SaleRepository;
+use App\Interfaces\TransferRepositoryInterface;
+use App\Repositories\TransferRepository;
 
 
 
@@ -40,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(FournisseurRepositoryInterface::class, FournisseurRepository::class);
         $this->app->bind(PurchaseRepositoryInterface::class, PurchaseRepository::class);
         $this->app->bind(SaleRepositoryInterface::class, SaleRepository::class);
+        $this->app->bind(TransferRepositoryInterface::class, TransferRepository::class);
     }
 
     /**

@@ -11,11 +11,14 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\FournisseurController;
 use App\Http\Controllers\Api\PurchaseController;
 use App\Http\Controllers\Api\SaleController;
+use App\Http\Controllers\Api\TransferController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+
+Route::apiResource('transfer', TransferController::class);
 
 Route::apiResource('clients', ClientController::class);
 Route::apiResource('fournisseurs', FournisseurController::class);
