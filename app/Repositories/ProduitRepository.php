@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Produit;
 use App\Interfaces\ProduitRepositoryInterface;
+use App\Constants\PaginationConstants;
 
 class ProduitRepository implements ProduitRepositoryInterface
 {
@@ -34,13 +35,33 @@ class ProduitRepository implements ProduitRepositoryInterface
 
     public function getByBoutique($boutiqueId, array $filters = [])
     {
-        return Produit::filter($filters)->where('boutique_id', $boutiqueId)->get();
+        $perPage = $filters['per_page'] ?? PaginationConstants::DEFAULT_PER_PAGE;
+        $page = $filters['page'] ?? PaginationConstants::DEFAULT_PAGE;
+
+        return Produit::filter($filters)
+            ->where('boutique_id', $boutiqueId)
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function getByMagasin($magasinId, array $filters = [])
     {
-        return Produit::filter($filters)->where('magasin_id', $magasinId)->get();
+        $perPage = $filters['per_page'] ?? PaginationConstants::DEFAULT_PER_PAGE;
+        $page = $filters['page'] ?? PaginationConstants::DEFAULT_PAGE;
+
+        return Produit::filter($filters)
+            ->where('magasin_id', $magasinId)
+            ->paginate($perPage, ['*'], 'page', $page);
     }
+
+    public function getAllPaginated(array $filters = [])
+    {
+        $perPage = $filters['per_page'] ?? PaginationConstants::DEFAULT_PER_PAGE;
+        $page = $filters['page'] ?? PaginationConstants::DEFAULT_PAGE;
+
+        return Produit::filter($filters)
+            ->paginate($perPage, ['*'], 'page', $page);
+    }
+
 
     public function getProduitById($id)
     {

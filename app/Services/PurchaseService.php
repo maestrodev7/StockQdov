@@ -7,6 +7,8 @@ use App\Services\ProduitService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Interfaces\ProduitRepositoryInterface;
+use App\Interfaces\FournisseurRepositoryInterface;
 
 use Exception;
 
@@ -17,7 +19,9 @@ class PurchaseService
 
     public function __construct(
         PurchaseRepositoryInterface $purchaseRepository,
-        ProduitService $produitService
+        ProduitService $produitService,
+        protected ProduitRepositoryInterface $produitRepository,
+        protected FournisseurRepositoryInterface $fournisseurRepository
     ) {
         $this->purchaseRepository = $purchaseRepository;
         $this->produitService = $produitService;
@@ -57,15 +61,56 @@ class PurchaseService
         }
     }
 
-    public function getPurchaseById(int $purchaseId)
-    {
-        return $this->purchaseRepository->getPurchaseById($purchaseId);
+
+
+public function getPurchaseById(int $purchaseId)
+{
+    $purchase = $this->purchaseRepository->getPurchaseById($purchaseId);
+
+    if (!$purchase) {
+        return null;
     }
+
+    try {
+        $product = $this->produitRepository->getProduitById($purchase->product_id);
+        $purchase->product = $product;
+    } catch (ModelNotFoundException $e) {
+        $purchase->product = null;
+    }
+
+    try {
+        $fournisseur = $this->fournisseurRepository->getFournisseurById($purchase->supplier_id);
+        $purchase->fournisseur = $fournisseur;
+    } catch (ModelNotFoundException $e) {
+        $purchase->fournisseur = null;
+    }
+
+    return $purchase;
+}
 
     public function filterPurchases(array $filters)
     {
-        return $this->purchaseRepository->filterPurchases($filters);
+        $purchases = $this->purchaseRepository->filterPurchases($filters);
+
+        return $purchases->map(function ($purchase) {
+            try {
+                $product = $this->produitRepository->getProduitById($purchase->product_id);
+                $purchase->product = $product;
+            } catch (ModelNotFoundException $e) {
+                $purchase->product = null;
+            }
+
+            try {
+                $fournisseur = $this->fournisseurRepository->getFournisseurById($purchase->supplier_id);
+                $purchase->fournisseur = $fournisseur;
+            } catch (ModelNotFoundException $e) {
+                $purchase->fournisseur = null;
+            }
+
+            return $purchase;
+        });
     }
+
 
     public function updatePurchase(int $purchaseId, array $data)
     {
@@ -118,7 +163,6 @@ class PurchaseService
             $purchase = $this->getPurchaseById($purchaseId);
             $product = $this->produitService->getProduitById($purchase->product_id);
 
-            // ✅ Décrémenter le stock (on annule l’ajout de l’achat)
             $this->produitService->decrementStock($product->id, $purchase->quantity);
 
             $result = $this->purchaseRepository->deletePurchase($purchaseId);

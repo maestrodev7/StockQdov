@@ -75,7 +75,7 @@ class ProduitController extends Controller
     {
         try {
             $filters = $request->all();
-            $produits = $this->produitService->scopeFilter($filters)->get();
+            $produits = $this->produitService->getAllPaginated($filters);
             return $this->success($produits, 'Produits récupérés avec succès.');
         } catch (QueryException $e) {
             return $this->error('Erreur de base de données : ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);

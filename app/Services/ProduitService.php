@@ -2,14 +2,19 @@
 namespace App\Services;
 
 use App\Interfaces\ProduitRepositoryInterface;
+use App\Interfaces\CategorieRepositoryInterface;
 
 class ProduitService
 {
     protected $produitRepository;
+    protected $categorieRepository;
 
-    public function __construct(ProduitRepositoryInterface $produitRepository)
-    {
+    public function __construct(
+        ProduitRepositoryInterface $produitRepository,
+        CategorieRepositoryInterface $categorieRepository
+    ) {
         $this->produitRepository = $produitRepository;
+        $this->categorieRepository = $categorieRepository;
     }
 
     public function ajouterAuMagasin($data)
@@ -28,22 +33,54 @@ class ProduitService
 
     public function getByBoutique($boutiqueId, $filters = [])
     {
-        return $this->produitRepository->getByBoutique($boutiqueId, $filters);
+        $result = $this->produitRepository->getByBoutique($boutiqueId, $filters);
+        return $this->formatPaginatedResponse($result);
     }
 
     public function getByMagasin($magasinId, $filters = [])
     {
-        return $this->produitRepository->getByMagasin($magasinId, $filters);
+        $result = $this->produitRepository->getByMagasin($magasinId, $filters);
+        return $this->formatPaginatedResponse($result);
+    }
+
+    public function getAllPaginated(array $filters = [])
+    {
+        $result = $this->produitRepository->getAllPaginated($filters);
+        return $this->formatPaginatedResponse($result);
     }
 
     public function getProduitById($id)
     {
-        return $this->produitRepository->getProduitById($id);
+        $produit = $this->produitRepository->getProduitById($id);
+        return $this->attachCategorie($produit);
     }
 
-    public function scopeFilter(array $filters = [])
+    private function formatPaginatedResponse($paginator)
     {
-        return $this->produitRepository->scopeFilter($filters);
+        $produits = $paginator->items();
+        $categories = $this->categorieRepository->getAllCategories()->keyBy('id');
+
+        foreach ($produits as $produit) {
+            $produit->categorie = $categories->get($produit->categorie_id);
+        }
+
+        return [
+            'data' => $produits,
+            'meta' => [
+                'total' => $paginator->total(),
+                'per_page' => $paginator->perPage(),
+                'current_page' => $paginator->currentPage(),
+                'last_page' => $paginator->lastPage(),
+            ],
+        ];
+    }
+
+    private function attachCategorie(&$produit)
+    {
+        if ($produit && $produit->categorie_id) {
+            $categorie = $this->categorieRepository->getAllCategories()->firstWhere('id', $produit->categorie_id);
+            $produit->categorie = $categorie;
+        }
     }
 
     public function update($id, array $data)
@@ -61,7 +98,6 @@ class ProduitService
         return $this->produitRepository->incrementStock($produitId, $quantite);
     }
 
-    // 🔴 Décrémentation du stock
     public function decrementStock($produitId, $quantite)
     {
         return $this->produitRepository->decrementStock($produitId, $quantite);
