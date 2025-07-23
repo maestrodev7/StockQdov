@@ -3,32 +3,57 @@ namespace App\Services;
 
 use App\Interfaces\ProduitRepositoryInterface;
 use App\Interfaces\CategorieRepositoryInterface;
+use App\Interfaces\TailleProduitRepositoryInterface;
+
 
 class ProduitService
 {
-    protected $produitRepository;
-    protected $categorieRepository;
 
     public function __construct(
-        ProduitRepositoryInterface $produitRepository,
-        CategorieRepositoryInterface $categorieRepository
-    ) {
-        $this->produitRepository = $produitRepository;
-        $this->categorieRepository = $categorieRepository;
+        protected ProduitRepositoryInterface $produitRepository,
+        protected CategorieRepositoryInterface $categorieRepository,
+        protected TailleProduitRepositoryInterface $tailleProduitRepository
+    )
+    {
     }
 
     public function ajouterAuMagasin($data)
     {
-        return $this->produitRepository->create($data);
+        $produit = $this->produitRepository->create($data);
+
+        if (!empty($data['tailles']) && is_array($data['tailles'])) {
+            foreach ($data['tailles'] as $taille) {
+                $this->tailleProduitRepository->create([
+                    'produit_id' => $produit->id,
+                    'taille' => $taille['taille'],
+                    'prix_achat' => $taille['prix_achat'],
+                    'prix_vente' => $taille['prix_vente'],
+                    'quantite' => $taille['quantite'],
+                ]);
+            }
+        }
+
+        return $produit;
     }
 
     public function ajouterALaBoutique($data)
     {
-        if ($data['from_magazin']) {
-            $this->produitRepository->decrementStock($data['magasin_id'], $data['quantite']);
+
+        $produit = $this->produitRepository->create($data);
+
+        if (!empty($data['tailles']) && is_array($data['tailles'])) {
+            foreach ($data['tailles'] as $taille) {
+                $this->tailleProduitRepository->create([
+                    'produit_id' => $produit->id,
+                    'taille' => $taille['taille'],
+                    'prix_achat' => $taille['prix_achat'],
+                    'prix_vente' => $taille['prix_vente'],
+                    'quantite' => $taille['quantite'],
+                ]);
+            }
         }
 
-        return $this->produitRepository->create($data);
+        return $produit;
     }
 
     public function getByBoutique($boutiqueId, $filters = [])
@@ -52,7 +77,9 @@ class ProduitService
     public function getProduitById($id)
     {
         $produit = $this->produitRepository->getProduitById($id);
-        return $this->attachCategorie($produit);
+        $this->attachCategorie($produit);
+        $produit->tailles = $this->tailleProduitRepository->getByProduitId($produit->id);
+        return $produit;
     }
 
     private function formatPaginatedResponse($paginator)
@@ -62,6 +89,7 @@ class ProduitService
 
         foreach ($produits as $produit) {
             $produit->categorie = $categories->get($produit->categorie_id);
+            $produit->tailles = $this->tailleProduitRepository->getByProduitId($produit->id);
         }
 
         return [

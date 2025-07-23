@@ -16,6 +16,8 @@ use App\Repositories\CategorieRepository;
 use App\Interfaces\ClientRepositoryInterface;
 use App\Repositories\ClientRepository;
 use App\Interfaces\FournisseurRepositoryInterface;
+use App\Interfaces\TailleProduitRepositoryInterface;
+use App\Repositories\TailleProduitRepository;
 use App\Repositories\FournisseurRepository;
 use App\Interfaces\PurchaseRepositoryInterface;
 use App\Repositories\PurchaseRepository;
@@ -43,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PurchaseRepositoryInterface::class, PurchaseRepository::class);
         $this->app->bind(SaleRepositoryInterface::class, SaleRepository::class);
         $this->app->bind(TransferRepositoryInterface::class, TransferRepository::class);
+        $this->app->bind(TailleProduitRepositoryInterface::class, TailleProduitRepository::class);
     }
 
     /**

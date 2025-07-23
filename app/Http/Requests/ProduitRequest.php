@@ -6,19 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ProduitRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
+
     public function rules(): array
     {
         return [
@@ -33,6 +27,12 @@ class ProduitRequest extends FormRequest
             'magasin_id' => 'nullable|exists:magasins,id',
             'boutique_id' => 'nullable|exists:boutiques,id',
             'from_magazin' => 'nullable|boolean',
+
+            'tailles' => 'nullable|array',
+            'tailles.*.taille' => 'required|string|max:50',
+            'tailles.*.prix_achat' => 'required|numeric',
+            'tailles.*.prix_vente' => 'required|numeric',
+            'tailles.*.quantite' => 'required|integer|min:0',
         ];
     }
 }
